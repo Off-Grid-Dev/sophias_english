@@ -92,6 +92,7 @@ function PictureRecognition() {
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [imgLoading, setImgLoading] = useState(true);
 
   // Generate random options for the current word
   useEffect(() => {
@@ -108,6 +109,7 @@ function PictureRecognition() {
     setOptions(newOptions);
     setSelectedAnswer(null);
     setShowFeedback(false);
+    setImgLoading(true);
   }, [currentIndex, isFinished]);
 
   // Play pronunciation
@@ -186,11 +188,22 @@ function PictureRecognition() {
         Score: {score}/{vocab.length}
       </p>
       <div className="bg-[var(--color-base-200)] p-6 rounded-lg shadow-md w-full max-w-md">
-        <img
-          src={vocab[currentIndex].image}
-          alt="an image"
-          className="w-full h-48 object-cover rounded-md mb-4"
-        />
+        <div className="w-full h-48 flex items-center justify-center mb-4 relative">
+          {imgLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-base-200)]">
+              <div className="w-12 h-12 border-4 border-[var(--color-primary-300)] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+          <img
+            src={vocab[currentIndex].image}
+            alt="an image"
+            className={`w-full h-48 object-cover rounded-md ${
+              imgLoading ? "invisible" : ""
+            }`}
+            onLoad={() => setImgLoading(false)}
+            onError={() => setImgLoading(false)}
+          />
+        </div>
         <p className="text-xl text-[var(--color-base-900)] text-center mb-2">
           {vocab[currentIndex].translation}
         </p>
